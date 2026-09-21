@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>卷宗归类台</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">档案室编目工具</p>
+      <h1>卷宗归类台</h1>
+      <p class="subtitle">年度、保管期限、门类定档号；一层一门类，六十卷入架，溢出进暂存格。</p>
+    </div>
+    <div class="header-actions">
+      <button type="button" id="loadSamples" class="secondary">载入示例</button>
+      <button type="button" id="addPressureBatch" class="secondary">加入95卷容量测试</button>
+      <button type="button" id="clearAll" class="danger">清空重来</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel rule-panel" aria-labelledby="ruleTitle">
+      <div class="section-heading">
+        <div>
+          <h2 id="ruleTitle">1. 档号规矩</h2>
+          <p>档号格式：年度-保管期限代码-门类代码-三位顺序号。</p>
+        </div>
+        <button type="button" id="saveRule" class="primary">保存规矩</button>
+      </div>
+
+      <div class="rule-grid">
+        <label>
+          年度
+          <input id="ruleYear" inputmode="numeric" maxlength="4">
+        </label>
+        <label>
+          连接符
+          <select id="ruleSeparator">
+            <option value="-">-</option>
+            <option value="·">·</option>
+            <option value="/">/</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="rule-columns">
+        <div>
+          <div class="subheading">
+            <h3>保管期限</h3>
+            <button type="button" class="secondary small" data-add="retention">新增</button>
+          </div>
+          <div id="retentionRows" class="rule-rows"></div>
+        </div>
+        <div>
+          <div class="subheading">
+            <h3>门类（由上至下为层号）</h3>
+            <button type="button" class="secondary small" data-add="category">新增</button>
+          </div>
+          <div id="categoryRows" class="rule-rows"></div>
+        </div>
+      </div>
+
+      <details class="help-box">
+        <summary>规矩变更说明</summary>
+        <ul>
+          <li>修改年度会清空当前排架并要求全部重摆，系统会保留重摆前后的位置比对。</li>
+          <li>修改期限或门类的名称、代码，不会改动已上架卷宗已经落定的档号。</li>
+          <li>调整门类顺序会按新顺序重排层号；档号仍保持锁定。</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="panel work-panel" aria-labelledby="workTitle">
+      <div class="section-heading">
+        <div>
+          <h2 id="workTitle">2. 待归与当前手层</h2>
+          <p id="resumeHint" class="resume-hint"></p>
+        </div>
+      </div>
+
+      <form id="volumeForm" class="volume-form">
+        <input name="title" placeholder="卷宗题名，例如：2026年度会议纪要" required>
+        <select name="retentionId"></select>
+        <select name="categoryId"></select>
+        <button type="submit" class="primary">登记待归卷</button>
+      </form>
+
+      <div class="active-controls">
+        <label>
+          手上那一层
+          <select id="activeCategory"></select>
+        </label>
+        <button type="button" id="placeNext" class="primary">摆上下一卷</button>
+        <button type="button" id="placeAll" class="secondary">连续摆完本层</button>
+      </div>
+
+      <div id="nextVolume" class="next-volume"></div>
+
+      <div class="transfer-box">
+        <h3>卷宗调层</h3>
+        <p id="selectedVolumeText">点击架上任一卷宗，再选择要调入的门类。</p>
+        <div class="transfer-actions">
+          <select id="transferTarget"></select>
+          <button type="button" id="transferVolume" class="secondary" disabled>调入所选门类</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="subheading">
+          <h3>待归区</h3>
+          <span id="pendingCount" class="count-badge"></span>
+        </div>
+        <div id="pendingList" class="pending-list"></div>
+      </div>
+    </section>
+
+    <section class="panel comparison-panel" aria-labelledby="comparisonTitle">
+      <div class="section-heading">
+        <div>
+          <h2 id="comparisonTitle">重摆比对</h2>
+          <p>年度变更后，逐卷显示是否仍在原层、原格。</p>
+        </div>
+      </div>
+      <div id="comparisonSummary"></div>
+      <div id="comparisonList" class="comparison-list"></div>
+    </section>
+
+    <section class="panel shelves-panel" aria-labelledby="shelvesTitle">
+      <div class="section-heading">
+        <div>
+          <h2 id="shelvesTitle">3. 正式架与暂存格</h2>
+          <p>每层容量60卷；暂存格容量30卷，满后不再接收。</p>
+        </div>
+      </div>
+      <div id="tempArea" class="temp-area"></div>
+      <div id="shelves" class="shelves"></div>
+    </section>
+
+    <section class="panel log-panel" aria-labelledby="logTitle">
+      <h2 id="logTitle">操作记录</h2>
+      <ol id="logList" class="log-list"></ol>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
