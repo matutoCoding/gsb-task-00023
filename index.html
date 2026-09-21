@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>卷宗归类台</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>卷宗归类台</h1>
+      <p>档号落定后锁定；换年度会先把已摆卷宗退回待归区。</p>
+    </div>
+    <div class="header-actions">
+      <span id="saveState" class="save-state">已自动保存</span>
+      <button id="resetDemo" type="button" class="btn btn-ghost">恢复演示数据</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="column left-column">
+      <article class="card">
+        <h2>1. 档号规矩</h2>
+        <div class="rule-year">
+          <form id="yearForm" class="inline-form">
+            <label>
+              年度
+              <input id="yearInput" name="year" inputmode="numeric" maxlength="4" required>
+            </label>
+            <button type="submit" class="btn btn-warning">修改年度并重摆</button>
+          </form>
+          <p class="hint">格式：年度-保管期限码-门类码-四位顺序号。例：<strong id="codePreview"></strong></p>
+        </div>
+
+        <div class="rule-grids">
+          <div>
+            <h3>保管期限</h3>
+            <ul id="retentionList" class="rule-list"></ul>
+            <form id="retentionForm" class="subform">
+              <input name="code" placeholder="代码，如 D30" required>
+              <input name="name" placeholder="名称，如 定期30年" required>
+              <button class="btn" type="submit">添加</button>
+            </form>
+          </div>
+          <div>
+            <h3>门类与层号</h3>
+            <ul id="categoryList" class="rule-list"></ul>
+            <form id="categoryForm" class="subform">
+              <input name="code" placeholder="代码，如 WS" required>
+              <input name="name" placeholder="名称，如 文书" required>
+              <button class="btn" type="submit">追加一层</button>
+            </form>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>2. 待归卷宗</h2>
+        <form id="volumeForm" class="volume-form">
+          <input name="title" placeholder="卷宗题名" required>
+          <select name="retentionId" required></select>
+          <select name="categoryId" required></select>
+          <button class="btn" type="submit">送入待归区</button>
+        </form>
+        <div id="pendingQueues" class="pending-queues"></div>
+      </article>
+
+      <article id="currentWork" class="card current-work"></article>
+
+      <article id="selectedPanel" class="card selected-panel"></article>
+    </section>
+
+    <section class="column right-column">
+      <article class="card">
+        <div class="section-title-row">
+          <h2>3. 正式架与暂存格</h2>
+          <span class="hint">正式架每层 60 卷；暂存格每格 30 卷</span>
+        </div>
+        <div id="shelves"></div>
+      </article>
+
+      <article class="card">
+        <h2>4. 最近一轮比对</h2>
+        <div id="diffPanel"></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
